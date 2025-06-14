@@ -1,0 +1,47 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+        
+model Usuarios {
+  id Int @id @default(autoincrement())
+  nombres String
+  apellidos String
+  cedula String
+  correo String
+  password String
+  genero String
+  fechaNacimiento DateTime
+  fotoCedula String
+  fotoUsuario String
+  tipoUsuario String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  terapeutas Terapeutas[]
+  pacientes Pacientes[]
+}
+
+model Terapeutas {
+  id Int @id @default(autoincrement())
+  idUsuario Int 
+  aniosExperiencia Int
+  titulo String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  usuario Usuarios @relation(fields: [idUsuario], references: [id])
+}
+
+model Pacientes {
+  id Int @id @default(autoincrement())
+  idUsuario Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  usuario Usuarios @relation(fields: [idUsuario], references: [id])
+}
