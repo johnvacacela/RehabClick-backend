@@ -7,9 +7,14 @@ import { Usuarios } from '@prisma/client'; // Importa el tipo Users de Prisma, q
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  async getAllUsers(): Promise<Usuarios[]> {
-    //Como es asyncrono se usan promesas (como usar el await)
-    return this.prisma.usuarios.findMany(); // Devuelve todos los usuarios de la base de datos
+  async getAllUsers() {
+    // Incluye las relaciones con terapeutas y pacientes
+    return await this.prisma.usuarios.findMany({
+      include: {
+        datosExtraTerapeuta: true,
+        datosExtraPaciente: true
+      },
+    });
   }
 
   async getUserById(id: number): Promise<Usuarios | null> {
@@ -53,16 +58,16 @@ export class UserService {
         data: {
           idUsuario: usuario.id,
         },
-      })
+      });
     } else if (data.typeUser === 'terapeuta') {
       const anios = Number(data.terapeutaData?.experience);
       await this.prisma.terapeutas.create({
         data: {
-            idUsuario: usuario.id,
-            aniosExperiencia: isNaN(anios) ? 0 : anios,
-            titulo: data.terapeutaData?.titlePath || '',
+          idUsuario: usuario.id,
+          aniosExperiencia: isNaN(anios) ? 0 : anios,
+          titulo: data.terapeutaData?.titlePath || '',
         },
-      })
+      });
     }
     return usuario;
   }

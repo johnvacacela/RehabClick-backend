@@ -24,8 +24,8 @@ model Usuarios {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  terapeutas Terapeutas[]
-  pacientes Pacientes[]
+  datosExtraTerapeuta Terapeutas[]
+  datosExtraPaciente Pacientes[]
 }
 
 model Terapeutas {
@@ -36,6 +36,8 @@ model Terapeutas {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   usuario Usuarios @relation(fields: [idUsuario], references: [id])
+
+  terapeuta_paciente Terapeuta_Paciente[]
 }
 
 model Pacientes {
@@ -44,4 +46,20 @@ model Pacientes {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   usuario Usuarios @relation(fields: [idUsuario], references: [id])
+
+  terapeuta_paciente Terapeuta_Paciente[]
 }
+
+model Terapeuta_Paciente {
+  id Int @id @default(autoincrement())
+  id_terapeuta Int
+  id_paciente Int
+  estado String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  terapeuta Terapeutas @relation(fields: [id_terapeuta], references: [id])
+  paciente Pacientes  @relation(fields: [id_paciente], references: [id])
+}
+
+
