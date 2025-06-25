@@ -23,6 +23,10 @@ export class UserService {
       where: {
         id,
       },
+      include: {
+        datosExtraTerapeuta: true, // Incluye los datos extra del terapeuta
+        datosExtraPaciente: true, // Incluye los datos extra del paciente
+      }
     }); // Devuelve un usuario de la base de datos por su id
   }
 
