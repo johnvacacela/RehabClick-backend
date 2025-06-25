@@ -1,17 +1,17 @@
 import { Controller, Get, Post, Body, Param, Res } from '@nestjs/common';
-import { UserService } from 'src/Users/users.service';
+import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: UserService) {}
+  constructor(private readonly authService: AuthService) {}
 
   @Post('validate')
   async validateUser(
     @Body() body: { email: string; password: string },
-    @Res() res: any
+    @Res() res: any,
   ) {
-    const user = await this.authService.getUserByField("correo", body.email);
-    
+    const user = await this.authService.validateUser(body.email, body.password);
+
     if (!user) {
       return res.status(404).json({
         status: 404,
@@ -19,11 +19,11 @@ export class AuthController {
       });
     }
 
-    if(user.password !== body.password) {
-        return res.status(401).json({
-            status: 401,
-            message: 'Contraseña incorrecta',
-        });
+    if (user.password !== body.password) {
+      return res.status(401).json({
+        status: 401,
+        message: 'Contraseña incorrecta',
+      });
     }
 
     return res.status(200).json({
@@ -35,8 +35,7 @@ export class AuthController {
         lastName: user.apellidos,
         email: user.correo,
         typeUser: user.tipoUsuario,
-      }
+      },
     });
-
   }
 }

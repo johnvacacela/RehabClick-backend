@@ -60,6 +60,53 @@ model Terapeuta_Paciente {
   
   terapeuta Terapeutas @relation(fields: [id_terapeuta], references: [id])
   paciente Pacientes  @relation(fields: [id_paciente], references: [id])
+
+  rutina Rutina[]
+}
+
+model Rutina {
+  id Int @id @default(autoincrement())
+  id_terapeuta_paciente Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  terapeuta_paciente Terapeuta_Paciente @relation(fields: [id_terapeuta_paciente], references: [id])
+
+  ejercicio_rutina Ejercicio_Rutina[]
+  recurrencia_rutina Recurrencia_Rutina[]
+}
+
+model Recurrencia_Rutina {
+  id Int @id @default(autoincrement())
+  id_rutina Int
+  fechaHoraProgramada DateTime
+  estado String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  rutina Rutina @relation(fields:[id_rutina], references: [id])
+}
+
+model Ejercicio {
+  id Int @id @default(autoincrement())
+  nombre String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  ejercicio_rutina Ejercicio_Rutina[]
+}
+
+model Ejercicio_Rutina {
+  id Int @id @default(autoincrement())
+  id_rutina Int
+  id_ejercio Int
+  nombre String
+  repeticiones Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  rutina Rutina @relation(fields:[id_rutina], references: [id])
+  ejercicio Ejercicio @relation(fields:[id_ejercio], references: [id])
 }
 
 
