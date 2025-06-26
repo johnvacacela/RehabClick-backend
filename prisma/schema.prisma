@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,105 +7,93 @@ datasource db {
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
-        
-model Usuarios {
-  id Int @id @default(autoincrement())
-  nombres String
-  apellidos String
-  cedula String
-  correo String
-  password String
-  genero String
-  fechaNacimiento DateTime
-  fotoCedula String
-  fotoUsuario String
-  tipoUsuario String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 
+model Usuarios {
+  id                  Int          @id @default(autoincrement())
+  cedula              String
+  correo              String
+  password            String
+  genero              String
+  fotoCedula          String
+  fotoUsuario         String
+  tipoUsuario         String
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+  apellidos           String
+  fechaNacimiento     DateTime
+  nombres             String
+  datosExtraPaciente  Pacientes[]
   datosExtraTerapeuta Terapeutas[]
-  datosExtraPaciente Pacientes[]
 }
 
 model Terapeutas {
-  id Int @id @default(autoincrement())
-  idUsuario Int 
-  aniosExperiencia Int
-  titulo String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  usuario Usuarios @relation(fields: [idUsuario], references: [id])
-
+  id                 Int                  @id @default(autoincrement())
+  idUsuario          Int
+  aniosExperiencia   Int
+  titulo             String
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
   terapeuta_paciente Terapeuta_Paciente[]
+  usuario            Usuarios             @relation(fields: [idUsuario], references: [id])
 }
 
 model Pacientes {
-  id Int @id @default(autoincrement())
-  idUsuario Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  usuario Usuarios @relation(fields: [idUsuario], references: [id])
-
+  id                 Int                  @id @default(autoincrement())
+  idUsuario          Int
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  usuario            Usuarios             @relation(fields: [idUsuario], references: [id])
   terapeuta_paciente Terapeuta_Paciente[]
 }
 
 model Terapeuta_Paciente {
-  id Int @id @default(autoincrement())
+  id           Int        @id @default(autoincrement())
   id_terapeuta Int
-  id_paciente Int
-  estado String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
-  terapeuta Terapeutas @relation(fields: [id_terapeuta], references: [id])
-  paciente Pacientes  @relation(fields: [id_paciente], references: [id])
-
-  rutina Rutina[]
+  id_paciente  Int
+  estado       String
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  rutina       Rutina[]
+  paciente     Pacientes  @relation(fields: [id_paciente], references: [id])
+  terapeuta    Terapeutas @relation(fields: [id_terapeuta], references: [id])
 }
 
 model Rutina {
-  id Int @id @default(autoincrement())
+  id                    Int                  @id @default(autoincrement())
   id_terapeuta_paciente Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  terapeuta_paciente Terapeuta_Paciente @relation(fields: [id_terapeuta_paciente], references: [id])
-
-  ejercicio_rutina Ejercicio_Rutina[]
-  recurrencia_rutina Recurrencia_Rutina[]
+  createdAt             DateTime             @default(now())
+  updatedAt             DateTime             @updatedAt
+  nombre                String?              @db.VarChar(255)
+  ejercicio_rutina      Ejercicio_Rutina[]
+  recurrencia_rutina    Recurrencia_Rutina[]
+  terapeuta_paciente    Terapeuta_Paciente   @relation(fields: [id_terapeuta_paciente], references: [id])
 }
 
 model Recurrencia_Rutina {
-  id Int @id @default(autoincrement())
-  id_rutina Int
+  id                  Int      @id @default(autoincrement())
+  id_rutina           Int
   fechaHoraProgramada DateTime
-  estado String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  rutina Rutina @relation(fields:[id_rutina], references: [id])
+  estado              String
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  rutina              Rutina   @relation(fields: [id_rutina], references: [id])
 }
 
 model Ejercicio {
-  id Int @id @default(autoincrement())
-  nombre String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
+  id               Int                @id @default(autoincrement())
+  nombre           String
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
   ejercicio_rutina Ejercicio_Rutina[]
 }
 
 model Ejercicio_Rutina {
-  id Int @id @default(autoincrement())
-  id_rutina Int
-  id_ejercicio Int
-  nombre String
+  id           Int       @id @default(autoincrement())
+  id_rutina    Int
   repeticiones Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  rutina Rutina @relation(fields:[id_rutina], references: [id])
-  ejercicio Ejercicio @relation(fields:[id_ejercicio], references: [id])
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  id_ejercicio Int
+  ejercicio    Ejercicio @relation(fields: [id_ejercicio], references: [id])
+  rutina       Rutina    @relation(fields: [id_rutina], references: [id])
 }
-
-

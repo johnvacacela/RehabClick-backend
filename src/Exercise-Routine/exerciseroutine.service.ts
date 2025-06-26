@@ -11,7 +11,6 @@ export class ExerciseRoutineService {
       data: {
         id_rutina: data.id_rutina,
         id_ejercicio: data.id_ejercicio,
-        nombre: data.nombre,
         repeticiones: data.repeticiones,
       },
     });
@@ -25,6 +24,12 @@ export class ExerciseRoutineService {
       include: {
         rutina: {
           include: {
+            recurrencia_rutina: true,
+            ejercicio_rutina: {
+              include: {
+                ejercicio: true,
+              },
+            },
             terapeuta_paciente: {
               include: {
                 paciente: {

@@ -12,7 +12,7 @@ export class UserService {
     return await this.prisma.usuarios.findMany({
       include: {
         datosExtraTerapeuta: true,
-        datosExtraPaciente: true
+        datosExtraPaciente: true,
       },
     });
   }
@@ -24,9 +24,38 @@ export class UserService {
         id,
       },
       include: {
-        datosExtraTerapeuta: true, // Incluye los datos extra del terapeuta
-        datosExtraPaciente: true, // Incluye los datos extra del paciente
-      }
+        datosExtraPaciente: {
+          include: {
+            terapeuta_paciente: {
+              include: {
+                rutina: {
+                  include: {
+                    recurrencia_rutina: true, // Incluye la recurrencia de la rutina
+                    ejercicio_rutina: {
+                      include: {
+                        ejercicio: true, // Incluye los ejercicios de la rutina
+                      },
+                    },
+                    terapeuta_paciente: {
+                      include: {
+                        terapeuta: {
+                          include: {
+                            usuario: {
+                              include: {
+                                datosExtraTerapeuta: true, // Incluye los datos extra del terapeuta
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     }); // Devuelve un usuario de la base de datos por su id
   }
 

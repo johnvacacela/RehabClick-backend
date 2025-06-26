@@ -16,6 +16,39 @@ export class RoutineRecurrenceService {
     });
   }
 
+  async getAllRoutineRecurrence() {
+    return await this.prisma.recurrencia_Rutina.findMany({
+      include: {
+        rutina: {
+          include: {
+            terapeuta_paciente: {
+              include: {
+                paciente: {
+                  include: {
+                    usuario: {
+                      include: {
+                        datosExtraPaciente: true,
+                      },
+                    },
+                  },
+                },
+                terapeuta: {
+                  include: {
+                    usuario: {
+                      include: {
+                        datosExtraTerapeuta: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
   async getAllRoutineRecurrencesByIdRoutine(id: number) {
     return await this.prisma.recurrencia_Rutina.findMany({
       where: {

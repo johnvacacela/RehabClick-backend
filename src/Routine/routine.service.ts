@@ -10,6 +10,7 @@ export class RoutineService {
     return await this.prisma.rutina.create({
       data: {
         id_terapeuta_paciente: data.id_terapeuta_paciente,
+        nombre: data.nombre,
       },
     });
   }

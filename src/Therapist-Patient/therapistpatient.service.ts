@@ -37,6 +37,15 @@ export class TherapistPatientService {
         id_paciente: id,
       },
       include: {
+        terapeuta: {
+          include: {
+            usuario: {
+              include: {
+                datosExtraTerapeuta: true,
+              },
+            },
+          },
+        },
         paciente: {
           include: {
             usuario: {
@@ -46,11 +55,12 @@ export class TherapistPatientService {
             },
           },
         },
-        terapeuta: {
+        rutina: {
           include: {
-            usuario: {
+            recurrencia_rutina: true,
+            ejercicio_rutina: {
               include: {
-                datosExtraTerapeuta: true,
+                ejercicio: true,
               },
             },
           },
