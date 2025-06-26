@@ -5,6 +5,7 @@ import { TherapistPatientModule } from './Therapist-Patient/therapistpatient.mod
 import { RoutineModule } from './Routine/routine.module';
 import { ExerciseModule } from './Exercise/exercise.module';
 import { ExerciseRoutineModule } from './Exercise-Routine/exerciseroutine.module';
+import { RoutineRecurrenceModule } from './Routine-Recurrence/routinerecurrence.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ExerciseRoutineModule } from './Exercise-Routine/exerciseroutine.module
     RoutineModule,
     ExerciseModule,
     ExerciseRoutineModule,
+    RoutineRecurrenceModule,
   ],
   controllers: [],
   providers: [],
