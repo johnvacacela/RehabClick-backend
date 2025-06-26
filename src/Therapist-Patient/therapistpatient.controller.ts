@@ -1,13 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  UploadedFiles,
-  UseInterceptors,
-  Body,
-  Res,
-  Param,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Res, Param } from '@nestjs/common';
 import { TherapistPatientService } from './therapistpatient.service';
 import { TherapistPatientType } from './Types/therapistpatient.types';
 
@@ -43,7 +34,9 @@ export class TherapistPatientController {
   ) {
     try {
       const therapistPatient =
-        await this.therapistPatientService.getTherapistPatientByPatientId(Number(id));
+        await this.therapistPatientService.getTherapistPatientByPatientId(
+          Number(id),
+        );
       if (!therapistPatient) {
         return res.status(404).json({
           status: 404,
@@ -71,7 +64,9 @@ export class TherapistPatientController {
   ) {
     try {
       const therapistPatient =
-        await this.therapistPatientService.getTherapistPatientByTherapistId(Number(id));
+        await this.therapistPatientService.getTherapistPatientByTherapistId(
+          Number(id),
+        );
       if (!therapistPatient) {
         return res.status(404).json({
           status: 404,
