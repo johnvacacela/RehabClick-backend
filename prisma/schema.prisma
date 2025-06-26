@@ -99,14 +99,14 @@ model Ejercicio {
 model Ejercicio_Rutina {
   id Int @id @default(autoincrement())
   id_rutina Int
-  id_ejercio Int
+  id_ejercicio Int
   nombre String
   repeticiones Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   rutina Rutina @relation(fields:[id_rutina], references: [id])
-  ejercicio Ejercicio @relation(fields:[id_ejercio], references: [id])
+  ejercicio Ejercicio @relation(fields:[id_ejercicio], references: [id])
 }
 
 

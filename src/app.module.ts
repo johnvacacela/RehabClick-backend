@@ -4,6 +4,7 @@ import { AuthModule } from './Auth/auth.module';
 import { TherapistPatientModule } from './Therapist-Patient/therapistpatient.module';
 import { RoutineModule } from './Routine/routine.module';
 import { ExerciseModule } from './Exercise/exercise.module';
+import { ExerciseRoutineModule } from './Exercise-Routine/exerciseroutine.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { ExerciseModule } from './Exercise/exercise.module';
     TherapistPatientModule,
     RoutineModule,
     ExerciseModule,
+    ExerciseRoutineModule,
   ],
   controllers: [],
   providers: [],
