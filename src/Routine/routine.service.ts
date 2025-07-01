@@ -21,6 +21,11 @@ export class RoutineService {
         id_terapeuta_paciente: id_terapeuta_paciente,
       },
       include: {
+        ejercicio_rutina: {
+          include: {
+            ejercicio: true, // Incluye los ejercicios de la rutina
+          }
+        },
         terapeuta_paciente: {
           include: {
             paciente: {
