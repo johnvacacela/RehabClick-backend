@@ -12,6 +12,7 @@ export class ExerciseRoutineService {
         id_rutina: data.id_rutina,
         id_ejercicio: data.id_ejercicio,
         repeticiones: data.repeticiones,
+        orden: data.orden || 0
       },
     });
   }

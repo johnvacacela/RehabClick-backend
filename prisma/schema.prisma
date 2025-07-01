@@ -82,6 +82,7 @@ model Recurrencia_Rutina {
 model Ejercicio {
   id               Int                @id @default(autoincrement())
   nombre           String
+  video_url        String
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
   ejercicio_rutina Ejercicio_Rutina[]
@@ -91,6 +92,7 @@ model Ejercicio_Rutina {
   id           Int       @id @default(autoincrement())
   id_rutina    Int
   repeticiones Int
+  orden        Int
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   id_ejercicio Int

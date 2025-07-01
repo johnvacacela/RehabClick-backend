@@ -10,6 +10,7 @@ export class ExcerciseService {
     return await this.prisma.ejercicio.create({
       data: {
         nombre: data.nombre,
+        video_url: data.video_url
       },
     });
   }
