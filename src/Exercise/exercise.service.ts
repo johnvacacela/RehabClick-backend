@@ -1,16 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/Prisma/prisma.service';
-import { ExcerciseType } from './Types/exercise.types';
+import { SupabaseService } from 'src/Supabase/supabase.service';
 
 @Injectable()
 export class ExcerciseService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private supabaseService: SupabaseService,
+  ) {}
 
-  async createExcercise(data: ExcerciseType) {
+  async createExcercise(filePath: string, nombre: string) {
+    const publicUrl = await this.supabaseService.uploadFile(
+      filePath,
+      `${nombre}-${Date.now()}.mp4`,
+      'videos',
+      'videos',
+    );
+
     return await this.prisma.ejercicio.create({
       data: {
-        nombre: data.nombre,
-        video_url: data.video_url
+        nombre,
+        video_url: publicUrl,
       },
     });
   }

@@ -1,11 +1,13 @@
+// src/utils/supabase.service.ts
 import { Injectable } from '@nestjs/common';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import * as fs from 'fs';
 import * as path from 'path';
 
-@Injectable() // Decorador que indica que la clase SupabaseService es un servicio inyectable, sin esto no se puede instanciar la clase en otro lugar
+@Injectable()
 export class SupabaseService {
   private supabase: SupabaseClient;
+
   constructor() {
     this.supabase = createClient(
       process.env.SUPABASE_URL!,
@@ -13,26 +15,30 @@ export class SupabaseService {
     );
   }
 
-  async uploadImage(
+  async uploadFile(
     localFilePath: string,
     destinationFileName: string,
+    folder: 'imagenes' | 'videos',
+    bucket: string,
   ): Promise<string> {
     const fileBuffer = fs.readFileSync(localFilePath);
     const contentType = this.detectMimeType(destinationFileName);
-
     const cleanedFileName = this.cleanFileName(destinationFileName);
 
+    const storagePath = `${folder}/${cleanedFileName}`;
+
     const { error } = await this.supabase.storage
-      .from(process.env.SUPABASE_BUCKET_NAME!)
-      .upload(`imagenes/${cleanedFileName}`, fileBuffer, {
+      .from(bucket)
+      .upload(storagePath, fileBuffer, {
         contentType,
         upsert: true,
       });
-    if (error) throw new Error(`Error al subir imagen: ${error.message}`);
+
+    if (error) throw new Error(`Error al subir archivo: ${error.message}`);
 
     const { data } = this.supabase.storage
-      .from(process.env.SUPABASE_BUCKET_NAME!)
-      .getPublicUrl(`imagenes/${destinationFileName}`);
+      .from(bucket)
+      .getPublicUrl(storagePath);
 
     return data.publicUrl;
   }
@@ -47,6 +53,12 @@ export class SupabaseService {
         return 'image/png';
       case '.gif':
         return 'image/gif';
+      case '.mp4':
+        return 'video/mp4';
+      case '.mov':
+        return 'video/quicktime';
+      case '.webm':
+        return 'video/webm';
       default:
         return 'application/octet-stream';
     }
@@ -54,8 +66,8 @@ export class SupabaseService {
 
   private cleanFileName(fileName: string): string {
     return fileName
-      .normalize('NFD') // Elimina acentos
-      .replace(/[\u0300-\u036f]/g, '') // Elimina caracteres unicode residuales
-      .replace(/[^\w.-]+/g, '_'); // Reemplaza espacios y símbolos por "_"
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^\w.-]+/g, '_');
   }
 }

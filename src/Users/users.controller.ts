@@ -64,7 +64,7 @@ export class UsersController {
     }
   }
 
-  @Post('create') //localhost:3000/users/create
+  @Post('create')
   @UseInterceptors(
     FileFieldsInterceptor(
       [
@@ -72,9 +72,7 @@ export class UsersController {
         { name: 'imagePath', maxCount: 1 },
         { name: 'titlePath', maxCount: 1 },
       ],
-      {
-        dest: './uploads', // Ruta donde se guardarán las imágenes subidas
-      },
+      { dest: './uploads' },
     ),
   )
   async createUser(
@@ -98,35 +96,41 @@ export class UsersController {
       }
 
       if (files.idCardPath?.[0]) {
-        const url = await this.SupabaseService.uploadImage(
+        const url = await this.SupabaseService.uploadFile(
           files.idCardPath[0].path,
           'Cedula_' +
             data.idCard +
             path.extname(files.idCardPath[0].originalname),
+          'imagenes',
+          process.env.SUPABASE_BUCKET_IMAGES || '',
         );
         data.idCardPath = url;
       }
 
       if (files.imagePath?.[0]) {
-        const url = await this.SupabaseService.uploadImage(
+        const url = await this.SupabaseService.uploadFile(
           files.imagePath[0].path,
           'Foto_' + data.idCard + path.extname(files.imagePath[0].originalname),
+          'imagenes',
+          process.env.SUPABASE_BUCKET_IMAGES || '',
         );
         data.imagePath = url;
       }
 
       if (files.titlePath?.[0]) {
-        const url = await this.SupabaseService.uploadImage(
+        const url = await this.SupabaseService.uploadFile(
           files.titlePath[0].path,
           'Titulo_' +
             data.idCard +
             path.extname(files.titlePath[0].originalname),
+          'imagenes',
+          process.env.SUPABASE_BUCKET_IMAGES || '',
         );
 
         if (typeof data.terapeutaData === 'string') {
           try {
             data.terapeutaData = JSON.parse(data.terapeutaData);
-          } catch (e) {
+          } catch {
             throw new Error('terapeutaData debe ser un JSON válido');
           }
         }
