@@ -35,6 +35,7 @@ model Terapeutas {
   updatedAt          DateTime             @updatedAt
   terapeuta_paciente Terapeuta_Paciente[]
   usuario            Usuarios             @relation(fields: [idUsuario], references: [id])
+  plan_terapeuta     PlanesTerapeuta?
 }
 
 model Pacientes {
@@ -98,4 +99,14 @@ model Ejercicio_Rutina {
   id_ejercicio Int
   ejercicio    Ejercicio @relation(fields: [id_ejercicio], references: [id])
   rutina       Rutina    @relation(fields: [id_rutina], references: [id])
+}
+
+model PlanesTerapeuta {
+  id             Int        @id @default(autoincrement())
+  id_terapeuta   Int        @unique
+  precio_mensual Float
+  precio_anual   Float
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  terapeuta      Terapeutas @relation(fields: [id_terapeuta], references: [id])
 }
