@@ -14,6 +14,19 @@ export class TherapistPlansService {
         id_terapeuta: true,
         precio_mensual: true,
         precio_anual: true,
+        terapeuta: {
+          select: {
+            aniosExperiencia: true,
+            titulo: true,
+            usuario: {
+              select: {
+                nombres: true,
+                apellidos: true,
+                fotoUsuario: true,
+              },
+            },
+          },
+        },
       },
     });
   }
