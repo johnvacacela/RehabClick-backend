@@ -55,6 +55,12 @@ export class UserService {
             },
           },
         },
+        datosExtraTerapeuta: {
+          select: {
+            id: true,
+            aniosExperiencia: true,
+          },
+        },
       },
     }); // Devuelve un usuario de la base de datos por su id
   }
