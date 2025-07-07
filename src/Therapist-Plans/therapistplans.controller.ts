@@ -10,7 +10,7 @@ import {
 import { TherapistPlansService } from './therapistplans.service';
 import { SupabaseService } from 'src/Supabase/supabase.service';
 import { Response } from 'express'; // Ensure Response type is imported
-import { TherapistPlansType } from './Types/therapistplans.types';
+import { CartItemType, TherapistPlansType } from './Types/therapistplans.types';
 
 @Controller('therapist-plans')
 export class TherapistPlansController {
@@ -59,6 +59,45 @@ export class TherapistPlansController {
       return res.status(500).json({
         status: 500,
         message: 'Error al obtener el plan de terapeuta',
+        error: error.message,
+      });
+    }
+  }
+
+  @Post('getPlanTypeByCartItems') //localhost:3000/therapist-plans/getPlanTypeByCartItems
+  async getTherapistPlanTypeById(
+    @Res() res: Response,
+    @Body() cartItems: CartItemType[],
+  ) {
+    try {
+      const plans = await Promise.all(
+        cartItems.map(async (item) => {
+          const plan =
+            await this.TherapistPlansService.getTherapistPlanTypeByTherapistId(
+              item.id_terapeuta,
+              item.tipo,
+            );
+
+          if (!plan) {
+            return {
+              status: 404,
+              message: `Plan de terapeuta con ID ${item.id_terapeuta} no encontrado`,
+            };
+          }
+
+          return plan;
+        }),
+      );
+
+      return res.status(200).json({
+        status: 200,
+        message: 'Planes del carrito obtenidos correctamente',
+        plans,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        status: 500,
+        message: 'Error al obtener los planes del carrito',
         error: error.message,
       });
     }

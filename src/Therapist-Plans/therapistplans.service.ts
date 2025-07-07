@@ -23,6 +23,8 @@ export class TherapistPlansService {
                 nombres: true,
                 apellidos: true,
                 fotoUsuario: true,
+                genero: true,
+                fechaNacimiento: true,
               },
             },
           },
@@ -39,6 +41,39 @@ export class TherapistPlansService {
         precio_anual: true,
       },
     });
+  }
+
+  async getTherapistPlanTypeByTherapistId(id: number, type: string) {
+    const plan = await this.prisma.planesTerapeuta.findUnique({
+      where: { id_terapeuta: id },
+      select: {
+        precio_mensual: true,
+        precio_anual: true,
+        terapeuta: {
+          select: {
+            usuario: {
+              select: {
+                nombres: true,
+                apellidos: true,
+                fotoUsuario: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!plan) {
+      return null;
+    }
+
+    return {
+      id_terapeuta: id,
+      nombre_usuario: `${plan.terapeuta.usuario.nombres.split(' ')[0]} ${plan.terapeuta.usuario.apellidos.split(' ')[0]}`,
+      tipo: type,
+      foto_usuario: plan.terapeuta.usuario.fotoUsuario,
+      precio: type === 'monthly' ? plan.precio_mensual : plan.precio_anual,
+    };
   }
 
   async setTherapistPlan(data: TherapistPlansType) {
