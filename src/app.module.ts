@@ -6,6 +6,7 @@ import { RoutineModule } from './Routine/routine.module';
 import { ExerciseModule } from './Exercise/exercise.module';
 import { ExerciseRoutineModule } from './Exercise-Routine/exerciseroutine.module';
 import { RoutineRecurrenceModule } from './Routine-Recurrence/routinerecurrence.module';
+import { TherapistPlansModule } from './Therapist-Plans/therapistplans.module';
 import { ChatModule } from './Chat/chat.module';
 
 @Module({
@@ -17,6 +18,7 @@ import { ChatModule } from './Chat/chat.module';
     ExerciseModule,
     ExerciseRoutineModule,
     RoutineRecurrenceModule,
+    TherapistPlansModule,
     ChatModule
   ],
   controllers: [],
