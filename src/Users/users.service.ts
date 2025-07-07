@@ -56,9 +56,34 @@ export class UserService {
           },
         },
         datosExtraTerapeuta: {
-          select: {
-            id: true,
-            aniosExperiencia: true,
+          include: {
+            terapeuta_paciente: {
+              include: {
+                rutina: {
+                  include: {
+                    recurrencia_rutina: true, 
+                    ejercicio_rutina: {
+                      include: {
+                        ejercicio: true, 
+                      },
+                    },
+                    terapeuta_paciente: {
+                      include: {
+                        paciente: {
+                          include: {
+                            usuario: {
+                              include: {
+                                datosExtraPaciente: true,
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
         },
       },

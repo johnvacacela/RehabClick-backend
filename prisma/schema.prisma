@@ -24,6 +24,8 @@ model Usuarios {
   nombres             String
   datosExtraPaciente  Pacientes[]
   datosExtraTerapeuta Terapeutas[]
+  mensajesEnviados  Mensajes[]  @relation("EmisorMensajes")
+  mensajesRecibidos Mensajes[]  @relation("ReceptorMensajes")
 }
 
 model Terapeutas {
@@ -109,4 +111,16 @@ model PlanesTerapeuta {
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
   terapeuta      Terapeutas @relation(fields: [id_terapeuta], references: [id])
+}
+
+model Mensajes {
+  id          Int      @id @default(autoincrement())
+  id_emisor   Int
+  id_receptor Int
+  mensaje     String
+  visto       Boolean  @default(false)
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  emisor      Usuarios @relation("EmisorMensajes", fields: [id_emisor], references: [id])
+  receptor    Usuarios @relation("ReceptorMensajes", fields: [id_receptor], references: [id])
 }
