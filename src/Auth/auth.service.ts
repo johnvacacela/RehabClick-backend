@@ -13,18 +13,18 @@ export class AuthService {
     const user = await this.userService.getUserByField('correo', email);
     if (!user) return null;
 
-    const passwordMatch = user.password === plainPassword; // Reemplazar con bcrypt.compare()
-
+    const passwordMatch = user.password === plainPassword;
     return passwordMatch ? user : null;
   }
 
   async login(user: any) {
-    const payload = { id: user.id, correo: user.correo, rol: user.tipoUsuario };
+    const payload = { 
+      sub: user.id, // <-- Cambio: usar 'sub' en lugar de 'id'
+      correo: user.correo, 
+      rol: user.tipoUsuario 
+    };
 
-    // Token de acceso (corta duración)
     const access_token = this.jwtService.sign(payload, { expiresIn: '15m' });
-
-    // Refresh token (larga duración)
     const refresh_token = this.jwtService.sign(payload, { expiresIn: '7d' });
 
     return {
@@ -42,16 +42,18 @@ export class AuthService {
 
   async refreshToken(refreshToken: string) {
     try {
-      // Verifica el refresh token
       const payload = this.jwtService.verify(refreshToken);
-      const user = await this.userService.getUserById(payload.sub);
+      const user = await this.userService.getUserById(payload.sub); // Ya funciona
 
       if (!user) {
         throw new UnauthorizedException('Usuario no encontrado');
       }
 
-      // Genera nuevo access token
-      const newPayload = { id: user.id, correo: user.correo, rol: user.tipoUsuario };
+      const newPayload = { 
+        sub: user.id, // <-- Cambio: usar 'sub' en lugar de 'id'
+        correo: user.correo, 
+        rol: user.tipoUsuario 
+      };
 
       const access_token = this.jwtService.sign(newPayload, { expiresIn: '15m' });
 
@@ -71,6 +73,6 @@ export class AuthService {
   }
 
   async validateToken(payload: any) {
-    return await this.userService.getUserById(payload.sub);
+    return await this.userService.getUserById(payload.sub); // Ya funciona
   }
 }

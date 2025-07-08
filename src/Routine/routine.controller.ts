@@ -1,11 +1,21 @@
-import { Controller, Get, Post, Body, Res, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Res,
+  Param,
+  UseGuards,
+} from '@nestjs/common';
 import { RoutineService } from './routine.service';
 import { RoutineType } from './Types/routine.types';
+import { JwtAuthGuard } from 'src/Auth/jwt-auth.guard';
 
 @Controller('routine')
 export class RoutineController {
   constructor(private readonly routineService: RoutineService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post('create')
   async createRoutine(@Body() data: RoutineType, @Res() res: any) {
     try {
@@ -24,6 +34,7 @@ export class RoutineController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('getByIdTherapistPatient/:id')
   async getAllRoutinesByIdTherapistPatient(
     @Res() res: any,
