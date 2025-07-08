@@ -57,6 +57,7 @@ model Terapeuta_Paciente {
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
   rutina       Rutina[]
+  citas        Citas[]
   paciente     Pacientes  @relation(fields: [id_paciente], references: [id])
   terapeuta    Terapeutas @relation(fields: [id_terapeuta], references: [id])
 }
@@ -123,4 +124,16 @@ model Mensajes {
   updatedAt      DateTime   @updatedAt
   emisor      Usuarios @relation("EmisorMensajes", fields: [id_emisor], references: [id])
   receptor    Usuarios @relation("ReceptorMensajes", fields: [id_receptor], references: [id])
+}
+
+model Citas {
+  id          Int      @id @default(autoincrement())
+  id_terapeuta_paciente Int
+  fechaHoraProgramada DateTime 
+  estado String
+  notas String
+  direccion String
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  terapeuta_paciente Terapeuta_Paciente @relation(fields: [id_terapeuta_paciente], references: [id])
 }
