@@ -131,7 +131,7 @@ model Citas {
   id_terapeuta_paciente Int
   fechaHoraProgramada DateTime 
   estado String
-  notas String
+  notas String?
   direccion String
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
