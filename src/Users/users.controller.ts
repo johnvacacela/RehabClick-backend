@@ -7,6 +7,7 @@ import {
   Body,
   Res,
   Param,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './users.service';
 import { SupabaseService } from 'src/Supabase/supabase.service';
@@ -14,6 +15,7 @@ import { CreateUserFullType } from './Types/users.types';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import * as path from 'path';
 import { Response } from 'express';
+import { JwtAuthGuard } from 'src/Auth/jwt-auth.guard';
 
 @Controller('users')
 export class UsersController {
@@ -22,6 +24,7 @@ export class UsersController {
     private readonly SupabaseService: SupabaseService,
   ) {}
 
+  @UseGuards(JwtAuthGuard)
   @Get('get') //localhost:3000/users/get
   async getAllUsers(@Res() res: Response) {
     try {
@@ -40,6 +43,7 @@ export class UsersController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('getById/:id')
   async getUserById(@Res() res: Response, @Param('id') id: number) {
     try {
@@ -64,6 +68,7 @@ export class UsersController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('create')
   @UseInterceptors(
     FileFieldsInterceptor(

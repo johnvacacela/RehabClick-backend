@@ -8,6 +8,7 @@ import { ExerciseRoutineModule } from './Exercise-Routine/exerciseroutine.module
 import { RoutineRecurrenceModule } from './Routine-Recurrence/routinerecurrence.module';
 import { TherapistPlansModule } from './Therapist-Plans/therapistplans.module';
 import { ChatModule } from './Chat/chat.module';
+import { AppointmentModule } from './Appointments/appointment.module';
 
 @Module({
   imports: [
@@ -19,7 +20,8 @@ import { ChatModule } from './Chat/chat.module';
     ExerciseRoutineModule,
     RoutineRecurrenceModule,
     TherapistPlansModule,
-    ChatModule
+    ChatModule,
+    AppointmentModule,
   ],
   controllers: [],
   providers: [],

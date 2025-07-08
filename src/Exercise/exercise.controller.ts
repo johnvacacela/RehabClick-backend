@@ -5,7 +5,7 @@ import {
   UploadedFile,
   Body,
   Res,
-  Param,
+  UseGuards,
   Get,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -14,12 +14,13 @@ import { diskStorage } from 'multer';
 import * as path from 'path';
 import * as fs from 'fs';
 import { Response } from 'express';
-import { get } from 'http';
+import { JwtAuthGuard } from 'src/Auth/jwt-auth.guard';
 
 @Controller('exercises')
 export class ExerciseController {
   constructor(private readonly exerciseService: ExcerciseService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Get('get') //localhost:3000/exercises/get
   async getAllExercises(@Res() res: Response) {
     try {
@@ -38,6 +39,7 @@ export class ExerciseController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('create') //localhost:3000/exercises/create
   @UseInterceptors(
     FileInterceptor('video', {

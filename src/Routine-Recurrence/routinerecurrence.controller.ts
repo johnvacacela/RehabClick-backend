@@ -1,6 +1,15 @@
-import { Controller, Get, Post, Body, Res, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Res,
+  Param,
+  UseGuards,
+} from '@nestjs/common';
 import { RoutineRecurrenceService } from './routinerecurrence.service';
 import { RoutineRecurrenceType } from './Types/routinesrecurrence.types';
+import { JwtAuthGuard } from 'src/Auth/jwt-auth.guard';
 
 @Controller('routine-recurrence')
 export class RoutineRecurrenceController {
@@ -8,6 +17,7 @@ export class RoutineRecurrenceController {
     private readonly routineRecurrenceService: RoutineRecurrenceService,
   ) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post('create')
   async createRoutineRecurrence(
     @Res() res: any,
@@ -30,6 +40,7 @@ export class RoutineRecurrenceController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('get')
   async getAllRoutineRecurrences(@Res() res: any) {
     try {
@@ -49,6 +60,7 @@ export class RoutineRecurrenceController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('getByIdRoutine/:id')
   async getAllRoutineRecurrencesByIdRoutine(
     @Res() res: any,

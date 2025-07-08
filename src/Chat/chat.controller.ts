@@ -1,10 +1,12 @@
-import { Controller, Get, Post, Body, Res, Param } from '@nestjs/common';
+import { Controller, Get, Res, Param, UseGuards } from '@nestjs/common';
 import { ChatService } from './chat.service';
+import { JwtAuthGuard } from 'src/Auth/jwt-auth.guard';
 
 @Controller('chat')
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Get('get/:id_emisor/:id_receptor')
   async getMessages(
     @Res() res: any,
@@ -30,6 +32,7 @@ export class ChatController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('getLastMessage/:id')
   async getLastMessage(@Res() res: any, @Param('id') id: number) {
     try {

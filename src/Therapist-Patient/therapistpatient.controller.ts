@@ -1,6 +1,15 @@
-import { Controller, Get, Post, Body, Res, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Res,
+  Param,
+  UseGuards,
+} from '@nestjs/common';
 import { TherapistPatientService } from './therapistpatient.service';
 import { TherapistPatientType } from './Types/therapistpatient.types';
+import { JwtAuthGuard } from 'src/Auth/jwt-auth.guard';
 
 @Controller('therapist-patient')
 export class TherapistPatientController {
@@ -8,6 +17,7 @@ export class TherapistPatientController {
     private readonly therapistPatientService: TherapistPatientService,
   ) {}
 
+  @UseGuards(JwtAuthGuard)
   @Get('get')
   async getAllTherapistPatients(@Res() res: any) {
     try {
@@ -27,6 +37,7 @@ export class TherapistPatientController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('getByPatientId/:id')
   async getTherapistPatientByPatientId(
     @Res() res: any,
@@ -57,6 +68,7 @@ export class TherapistPatientController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('getByTherapistId/:id')
   async getTherapistPatientByTherapistId(
     @Res() res: any,
@@ -87,6 +99,7 @@ export class TherapistPatientController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('create')
   async createTherapistPatient(
     @Body() data: TherapistPatientType,

@@ -5,12 +5,13 @@ import {
   Body,
   Res,
   Param,
-  UseInterceptors,
+  UseGuards,
 } from '@nestjs/common';
 import { TherapistPlansService } from './therapistplans.service';
 import { SupabaseService } from 'src/Supabase/supabase.service';
 import { Response } from 'express'; // Ensure Response type is imported
 import { CartItemType, TherapistPlansType } from './Types/therapistplans.types';
+import { JwtAuthGuard } from 'src/Auth/jwt-auth.guard';
 
 @Controller('therapist-plans')
 export class TherapistPlansController {
@@ -19,6 +20,7 @@ export class TherapistPlansController {
     private readonly SupabaseService: SupabaseService,
   ) {}
 
+  @UseGuards(JwtAuthGuard)
   @Get('get') //localhost:3000/therapist-plans/get
   async getAllTherapistPlans(@Res() res: Response) {
     try {
@@ -37,6 +39,7 @@ export class TherapistPlansController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('getByTherapistId/:id') //localhost:3000/therapist-plans/getByTherapistId/:id
   async getTherapistPlanById(@Res() res: Response, @Param('id') id: number) {
     try {
@@ -64,6 +67,7 @@ export class TherapistPlansController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('getPlanTypeByCartItems') //localhost:3000/therapist-plans/getPlanTypeByCartItems
   async getTherapistPlanTypeById(
     @Res() res: Response,
@@ -103,6 +107,7 @@ export class TherapistPlansController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('set') //localhost:3000/therapist-plans/set
   async setTherapistPlan(@Body() data: TherapistPlansType, @Res() res: any) {
     try {
