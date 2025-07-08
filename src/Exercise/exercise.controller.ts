@@ -16,11 +16,29 @@ import * as fs from 'fs';
 import { Response } from 'express';
 import { get } from 'http';
 
-@Controller('exercise')
+@Controller('exercises')
 export class ExerciseController {
   constructor(private readonly exerciseService: ExcerciseService) {}
 
-  @Post('create')
+  @Get('get') //localhost:3000/exercises/get
+  async getAllExercises(@Res() res: Response) {
+    try {
+      const exercises = await this.exerciseService.getAllExcercises();
+      return res.status(200).json({
+        status: 200,
+        message: 'Ejercicios obtenidos correctamente',
+        exercises,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        status: 500,
+        message: 'Error al obtener los ejercicios',
+        error: error.message,
+      });
+    }
+  }
+
+  @Post('create') //localhost:3000/exercises/create
   @UseInterceptors(
     FileInterceptor('video', {
       storage: diskStorage({

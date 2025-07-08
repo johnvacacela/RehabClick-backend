@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/Prisma/prisma.service';
 import { TherapistPlansType } from './Types/therapistplans.types';
-import { PlanesTerapeuta } from '@prisma/client';
 
 @Injectable()
 export class TherapistPlansService {
