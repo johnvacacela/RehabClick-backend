@@ -11,6 +11,7 @@ import { AppointmentService } from './appointment.service';
 import { AppointmentType } from './Types/appointment.types';
 import { JwtAuthGuard } from 'src/Auth/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('appointments')
 export class AppointmentController {
   constructor(private readonly appointmentService: AppointmentService) {}
@@ -39,6 +40,7 @@ export class AppointmentController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('create')
   async createAppointment(@Body() data: AppointmentType, @Res() res: any) {
     try {
