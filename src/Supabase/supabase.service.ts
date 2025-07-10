@@ -43,6 +43,29 @@ export class SupabaseService {
     return data.publicUrl;
   }
 
+  // En tu SupabaseService
+  async deleteFile(fileUrl: string): Promise<void> {
+    try {
+      // Extraer el nombre del archivo de la URL
+      const fileName = fileUrl.split('/').pop()?.split('?')[0];
+
+      if (!fileName) {
+        throw new Error('No se pudo extraer el nombre del archivo de la URL');
+      }
+
+      const { error } = await this.supabase.storage
+        .from(process.env.SUPABASE_BUCKET_IMAGES || '')
+        .remove([fileName]);
+
+      if (error) {
+        throw error;
+      }
+    } catch (error) {
+      console.error('Error eliminando archivo:', error);
+      throw error;
+    }
+  }
+
   private detectMimeType(fileName: string): string {
     const ext = path.extname(fileName).toLowerCase();
     switch (ext) {

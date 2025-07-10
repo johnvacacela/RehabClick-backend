@@ -61,10 +61,10 @@ export class UserService {
               include: {
                 rutina: {
                   include: {
-                    recurrencia_rutina: true, 
+                    recurrencia_rutina: true,
                     ejercicio_rutina: {
                       include: {
-                        ejercicio: true, 
+                        ejercicio: true,
                       },
                     },
                     terapeuta_paciente: {
@@ -136,13 +136,45 @@ export class UserService {
     return usuario;
   }
 
-  async updateUser(id: number, data: Partial<Usuarios>): Promise<Usuarios> {
-    //Recibe un id y un objeto de tipo Usuarios y devuelve un objeto de tipo Usuarios
+  async updateUser(
+    id: number,
+    updateData: {
+      nombres?: string;
+      apellidos?: string;
+      correo?: string;
+      fechaNacimiento?: string;
+      fotoUsuario?: string;
+      password?: string;
+    },
+  ): Promise<Omit<Usuarios, 'password'>> {
+    const dataToUpdate: Partial<Usuarios> = {};
+
+    if (updateData.nombres) dataToUpdate.nombres = updateData.nombres;
+    if (updateData.apellidos) dataToUpdate.apellidos = updateData.apellidos;
+    if (updateData.correo) dataToUpdate.correo = updateData.correo;
+    if (updateData.fechaNacimiento)
+      dataToUpdate.fechaNacimiento = new Date(updateData.fechaNacimiento);
+    if (updateData.fotoUsuario)
+      dataToUpdate.fotoUsuario = updateData.fotoUsuario;
+    if (updateData.password) dataToUpdate.password = updateData.password;
+
     return this.prisma.usuarios.update({
-      where: {
-        id,
+      where: { id },
+      data: dataToUpdate,
+      select: {
+        id: true,
+        nombres: true,
+        apellidos: true,
+        correo: true,
+        fechaNacimiento: true,
+        fotoUsuario: true,
+        tipoUsuario: true,
+        cedula: true,
+        genero: true,
+        createdAt: true,
+        updatedAt: true,
+        fotoCedula: true,
       },
-      data,
     });
   }
 

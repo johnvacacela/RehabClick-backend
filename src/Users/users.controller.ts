@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Patch,
   UploadedFiles,
   UseInterceptors,
   Body,
@@ -156,6 +157,141 @@ export class UsersController {
       return res.status(500).json({
         status: 500,
         message: 'Error al crear el usuario',
+        error: error.message,
+      });
+    }
+  }
+
+  @Patch('update/:id')
+  @UseInterceptors(
+    FileFieldsInterceptor([{ name: 'imagePath', maxCount: 1 }], {
+      dest: './uploads',
+    }),
+  )
+  async updateUser(
+    @Param('id') id: number,
+    @UploadedFiles()
+    files: {
+      imagePath?: Express.Multer.File[];
+    },
+    @Body()
+    updateData: {
+      nombres?: string;
+      apellidos?: string;
+      correo?: string;
+      fechaNacimiento?: string;
+      currentPassword?: string;
+      newPassword?: string;
+      confirmPassword?: string;
+    },
+    @Res() res: Response,
+  ) {
+    try {
+      // 1. Obtener usuario actual
+      const existingUser = await this.UserService.getUserById(Number(id));
+      if (!existingUser) {
+        return res.status(404).json({
+          status: 404,
+          message: 'Usuario no encontrado',
+        });
+      }
+
+      // 2. Validaciones de contraseña (igual que antes)
+      if (updateData.currentPassword && updateData.newPassword) {
+        if (updateData.newPassword !== updateData.confirmPassword) {
+          return res.status(400).json({
+            status: 400,
+            message: 'Las contraseñas nuevas no coinciden',
+          });
+        }
+
+        if (existingUser.password !== updateData.currentPassword) {
+          return res.status(400).json({
+            status: 400,
+            message: 'La contraseña actual es incorrecta',
+          });
+        }
+      }
+
+      // 3. Validar email único
+      if (updateData.correo && updateData.correo !== existingUser.correo) {
+        const emailExists = await this.UserService.getUserByField(
+          'correo',
+          updateData.correo,
+        );
+        if (emailExists) {
+          return res.status(400).json({
+            status: 400,
+            message: 'Ya existe un usuario con ese correo electrónico',
+          });
+        }
+      }
+
+      // 4. Manejar nueva foto de perfil
+      if (files.imagePath?.[0]) {
+        // 4a. Subir nueva foto
+        const nuevaFotoUrl = await this.SupabaseService.uploadFile(
+          files.imagePath[0].path,
+          'Foto_Update_' +
+            existingUser.cedula +
+            '_' +
+            Date.now() +
+            path.extname(files.imagePath[0].originalname),
+          'imagenes',
+          process.env.SUPABASE_BUCKET_IMAGES || '',
+        );
+
+        // 4b. Borrar foto anterior si existe
+        if (existingUser.fotoUsuario) {
+          try {
+            await this.SupabaseService.deleteFile(existingUser.fotoUsuario);
+            console.log('Foto anterior eliminada:', existingUser.fotoUsuario);
+          } catch (error) {
+            console.warn(
+              'No se pudo eliminar la foto anterior:',
+              error.message,
+            );
+            // No interrumpir el proceso si no se puede borrar
+          }
+        }
+
+        updateData['imagePath'] = nuevaFotoUrl;
+      }
+
+      // 5. Actualizar usuario
+      // En tu controlador, reemplaza la sección "5. Actualizar usuario":
+
+      // 5. Actualizar usuario
+      const dataToUpdate = {
+        nombres: updateData.nombres,
+        apellidos: updateData.apellidos,
+        correo: updateData.correo,
+        fechaNacimiento: updateData.fechaNacimiento,
+        password: updateData.newPassword, // <-- Mapear newPassword a password
+        fotoUsuario: updateData['imagePath'], // <-- Mapear imagePath a fotoUsuario
+      };
+
+      // Filtrar campos undefined para no enviar valores vacíos
+      const filteredData = Object.fromEntries(
+        Object.entries(dataToUpdate).filter(
+          ([_, value]) => value !== undefined,
+        ),
+      );
+
+      const updatedUser = await this.UserService.updateUser(
+        Number(id),
+        filteredData,
+      );
+
+      return res.status(200).json({
+        status: 200,
+        message: 'Usuario actualizado correctamente',
+        usuario: updatedUser,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        status: 500,
+        message: 'Error al actualizar el usuario',
         error: error.message,
       });
     }
