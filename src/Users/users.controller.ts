@@ -162,6 +162,7 @@ export class UsersController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch('update/:id')
   @UseInterceptors(
     FileFieldsInterceptor([{ name: 'imagePath', maxCount: 1 }], {
