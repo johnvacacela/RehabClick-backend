@@ -183,6 +183,7 @@ export class UsersController {
       currentPassword?: string;
       newPassword?: string;
       confirmPassword?: string;
+      terapeutaData?: string;
     },
     @Res() res: Response,
   ) {
@@ -260,6 +261,18 @@ export class UsersController {
 
       // 5. Actualizar usuario
       // En tu controlador, reemplaza la sección "5. Actualizar usuario":
+      let parsedTerapeutaData = null;
+
+      if (updateData.terapeutaData) {
+        try {
+          parsedTerapeutaData = JSON.parse(updateData.terapeutaData);
+        } catch (error) {
+          return res.status(400).json({
+            status: 400,
+            message: 'terapeutaData debe ser un JSON válido',
+          });
+        }
+      }
 
       // 5. Actualizar usuario
       const dataToUpdate = {
@@ -269,6 +282,7 @@ export class UsersController {
         fechaNacimiento: updateData.fechaNacimiento,
         password: updateData.newPassword, // <-- Mapear newPassword a password
         fotoUsuario: updateData['imagePath'], // <-- Mapear imagePath a fotoUsuario
+        terapeutaData: parsedTerapeutaData,
       };
 
       // Filtrar campos undefined para no enviar valores vacíos

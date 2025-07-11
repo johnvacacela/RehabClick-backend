@@ -145,8 +145,12 @@ export class UserService {
       fechaNacimiento?: string;
       fotoUsuario?: string;
       password?: string;
+      terapeutaData?: any;
     },
-  ): Promise<Omit<Usuarios, 'password'>> {
+  ): Promise<Omit<Usuarios, 'password'> | null> {
+    console.log('UserService - updateData recibido:', updateData);
+
+    // 1. Actualizar datos básicos del usuario
     const dataToUpdate: Partial<Usuarios> = {};
 
     if (updateData.nombres) dataToUpdate.nombres = updateData.nombres;
@@ -158,9 +162,43 @@ export class UserService {
       dataToUpdate.fotoUsuario = updateData.fotoUsuario;
     if (updateData.password) dataToUpdate.password = updateData.password;
 
-    return this.prisma.usuarios.update({
+    console.log('UserService - dataToUpdate para Usuario:', dataToUpdate);
+
+    // Actualizar usuario principal
+    await this.prisma.usuarios.update({
       where: { id },
       data: dataToUpdate,
+    });
+
+    // 2. Si hay datos de terapeuta, actualizar tabla terapeutas
+    if (updateData.terapeutaData) {
+      const user = await this.prisma.usuarios.findUnique({
+        where: { id },
+        include: { datosExtraTerapeuta: true },
+      });
+
+      if (user?.datosExtraTerapeuta && user.datosExtraTerapeuta.length > 0) {
+        const terapeutaId = user.datosExtraTerapeuta[0].id;
+
+        console.log('Actualizando terapeuta ID:', terapeutaId);
+        console.log(
+          'Nuevos años de experiencia:',
+          updateData.terapeutaData.añosExperiencia,
+        );
+
+        await this.prisma.terapeutas.update({
+          where: { id: terapeutaId },
+          data: {
+            aniosExperiencia:
+              Number(updateData.terapeutaData.añosExperiencia) || 0,
+          },
+        });
+      }
+    }
+
+    // 3. Devolver usuario actualizado sin password
+    return this.prisma.usuarios.findUnique({
+      where: { id },
       select: {
         id: true,
         nombres: true,
@@ -174,6 +212,17 @@ export class UserService {
         createdAt: true,
         updatedAt: true,
         fotoCedula: true,
+        datosExtraTerapeuta: {
+          select: {
+            id: true,
+            aniosExperiencia: true,
+          },
+        },
+        datosExtraPaciente: {
+          select: {
+            id: true,
+          },
+        },
       },
     });
   }
