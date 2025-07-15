@@ -24,8 +24,8 @@ model Usuarios {
   nombres             String
   datosExtraPaciente  Pacientes[]
   datosExtraTerapeuta Terapeutas[]
-  mensajesEnviados  Mensajes[]  @relation("EmisorMensajes")
-  mensajesRecibidos Mensajes[]  @relation("ReceptorMensajes")
+  mensajesEnviados    Mensajes[]   @relation("EmisorMensajes")
+  mensajesRecibidos   Mensajes[]   @relation("ReceptorMensajes")
 }
 
 model Terapeutas {
@@ -120,20 +120,20 @@ model Mensajes {
   id_receptor Int
   mensaje     String
   visto       Boolean  @default(false)
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   emisor      Usuarios @relation("EmisorMensajes", fields: [id_emisor], references: [id])
   receptor    Usuarios @relation("ReceptorMensajes", fields: [id_receptor], references: [id])
 }
 
 model Citas {
-  id          Int      @id @default(autoincrement())
+  id                    Int                @id @default(autoincrement())
   id_terapeuta_paciente Int
-  fechaHoraProgramada DateTime 
-  estado String
-  notas String?
-  direccion String
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
-  terapeuta_paciente Terapeuta_Paciente @relation(fields: [id_terapeuta_paciente], references: [id])
+  fechaHoraProgramada   DateTime
+  estado                String             @default("PROGRAMADA")
+  notas                 String?
+  direccion             String
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+  terapeuta_paciente    Terapeuta_Paciente @relation(fields: [id_terapeuta_paciente], references: [id])
 }
