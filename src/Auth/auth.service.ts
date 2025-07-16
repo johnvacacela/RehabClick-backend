@@ -19,12 +19,12 @@ export class AuthService {
 
   async login(user: any) {
     const payload = { 
-      sub: user.id, // <-- Cambio: usar 'sub' en lugar de 'id'
+      sub: user.id, 
       correo: user.correo, 
       rol: user.tipoUsuario 
     };
 
-    const access_token = this.jwtService.sign(payload, { expiresIn: '15m' });
+    const access_token = this.jwtService.sign(payload, { expiresIn: '20m' });
     const refresh_token = this.jwtService.sign(payload, { expiresIn: '7d' });
 
     return {
@@ -50,12 +50,12 @@ export class AuthService {
       }
 
       const newPayload = { 
-        sub: user.id, // <-- Cambio: usar 'sub' en lugar de 'id'
+        sub: user.id, 
         correo: user.correo, 
         rol: user.tipoUsuario 
       };
 
-      const access_token = this.jwtService.sign(newPayload, { expiresIn: '15m' });
+      const access_token = this.jwtService.sign(newPayload, { expiresIn: '20m' });
 
       return {
         access_token,
