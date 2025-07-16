@@ -11,6 +11,15 @@ export class RoutineService {
       data: {
         id_terapeuta_paciente: data.id_terapeuta_paciente,
         nombre: data.nombre,
+        ejercicio_rutina: {
+          createMany: {
+            data: data.ejercicios.map((exercise, index) => ({
+              id_ejercicio: exercise.id_ejercicio,
+              repeticiones: exercise.repeticiones,
+              orden: index + 1,
+            })),
+          },
+        },
       },
     });
   }
