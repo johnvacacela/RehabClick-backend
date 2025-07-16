@@ -64,4 +64,25 @@ export class RoutineController {
       });
     }
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('getByTherapistId/:id')
+  async getAllRoutinesByTherapistId(@Res() res: any, @Param('id') id: number) {
+    try {
+      const routines = await this.routineService.getAllRoutinesByTherapistId(
+        Number(id),
+      );
+      return res.status(200).json({
+        status: 200,
+        message: 'Routines retrieved successfully',
+        routines,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        status: 500,
+        message: 'Error retrieving routines',
+        error: error.message,
+      });
+    }
+  }
 }
