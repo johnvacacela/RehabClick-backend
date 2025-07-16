@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Citas" ALTER COLUMN "estado" SET DEFAULT 'PROGRAMADA';
