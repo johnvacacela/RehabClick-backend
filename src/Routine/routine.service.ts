@@ -46,6 +46,7 @@ export class RoutineService {
         id: true,
         id_terapeuta_paciente: true,
         nombre: true,
+        estado: true,
         ejercicio_rutina: {
           select: {
             id: true,
@@ -68,6 +69,7 @@ export class RoutineService {
       id: routine.id,
       id_terapeuta_paciente: routine.id_terapeuta_paciente,
       nombre: routine.nombre,
+      estado: routine.estado,
       ejercicios: routine.ejercicio_rutina.map((er) => ({
         id: er.id,
         nombre: er.ejercicio.nombre,
