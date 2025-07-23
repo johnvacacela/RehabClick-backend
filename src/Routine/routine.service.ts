@@ -24,6 +24,15 @@ export class RoutineService {
     });
   }
 
+  async updateRoutine(id: number, data: RoutineType) {
+    return await this.prisma.rutina.update({
+      where: { id },
+      data: {
+        estado: data.estado,
+      },
+    });
+  }
+
   async getAllRoutinesByTherapistId(id_terapeuta: number) {
     const routines = await this.prisma.rutina.findMany({
       where: {

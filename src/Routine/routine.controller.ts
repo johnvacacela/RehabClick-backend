@@ -6,6 +6,7 @@ import {
   Res,
   Param,
   UseGuards,
+  Patch,
 } from '@nestjs/common';
 import { RoutineService } from './routine.service';
 import { RoutineType } from './Types/routine.types';
@@ -29,6 +30,28 @@ export class RoutineController {
       return res.status(500).json({
         status: 500,
         message: 'Error creating routine',
+        error: error.message,
+      });
+    }
+  }
+
+  @Patch('update/:id')
+  async updateRoutine(
+    @Body() data: RoutineType,
+    @Res() res: any,
+    @Param('id') id: number,
+  ) {
+    try {
+      const routine = await this.routineService.updateRoutine(Number(id), data);
+      return res.status(200).json({
+        status: 200,
+        message: 'Routine updated successfully',
+        routine,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        status: 500,
+        message: 'Error updating routine',
         error: error.message,
       });
     }
