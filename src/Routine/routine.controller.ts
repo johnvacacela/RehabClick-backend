@@ -35,6 +35,7 @@ export class RoutineController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch('update/:id')
   async updateRoutine(
     @Body() data: RoutineType,
