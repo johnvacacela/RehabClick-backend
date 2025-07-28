@@ -53,7 +53,7 @@ model Terapeuta_Paciente {
   id           Int        @id @default(autoincrement())
   id_terapeuta Int
   id_paciente  Int
-  estado       String
+  estado       String     @default("activo")
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
   rutina       Rutina[]
